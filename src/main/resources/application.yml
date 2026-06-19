@@ -1,0 +1,61 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: pageturn-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pageturn}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: ${app.storage.max-file-size}
+      max-request-size: ${app.storage.max-file-size}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:VGhpc0lzQVN0cm9uZ0RldmVsb3BtZW50U2VjcmV0S2V5Rm9yUGFnZVR1cm5KU1dU}
+    access-token-expiration-minutes: ${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:60}
+    refresh-token-expiration-days: ${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:30}
+  storage:
+    upload-dir: ${APP_STORAGE_UPLOAD_DIR:./var/uploads}
+    public-dir: ${APP_STORAGE_PUBLIC_DIR:./var/public}
+    max-file-size: ${APP_STORAGE_MAX_FILE_SIZE:50MB}
+  cors:
+    allowed-origins:
+      - ${APP_CORS_ORIGIN_ANDROID:http://10.0.2.2:3000}
+      - ${APP_CORS_ORIGIN_WEB:http://localhost:3000}
+      - ${APP_CORS_ORIGIN_WEB_ALT:http://127.0.0.1:3000}
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - Authorization
+      - Content-Type
+      - Accept
+      - Origin
+      - X-Requested-With

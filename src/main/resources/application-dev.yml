@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pageturn_dev}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+logging:
+  level:
+    root: INFO
+    com.pageturn.backend: DEBUG
+
+app:
+  storage:
+    upload-dir: ${APP_STORAGE_UPLOAD_DIR:./var/dev/uploads}
+    public-dir: ${APP_STORAGE_PUBLIC_DIR:./var/dev/public}
