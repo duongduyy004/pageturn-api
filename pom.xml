@@ -21,6 +21,7 @@
         <java.version>25</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <jjwt.version>0.12.5</jjwt.version>
+        <native.access.args>--enable-native-access=ALL-UNNAMED</native.access.args>
     </properties>
 
     <dependencies>
@@ -106,8 +107,18 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${native.access.args}</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>${native.access.args}</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

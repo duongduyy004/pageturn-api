@@ -203,6 +203,9 @@ Using Maven:
 mvn spring-boot:run
 ```
 
+The Maven Spring Boot plugin injects `--enable-native-access=ALL-UNNAMED` so
+Tomcat native access warnings stay suppressed on newer JDKs.
+
 Or with the dev profile explicitly:
 
 ```bash

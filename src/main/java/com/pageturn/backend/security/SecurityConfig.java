@@ -1,5 +1,6 @@
 package com.pageturn.backend.security;
 
+import com.pageturn.backend.config.ApiRequestLoggingFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +21,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiRequestLoggingFilter apiRequestLoggingFilter;
     private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            ApiRequestLoggingFilter apiRequestLoggingFilter,
+            CustomUserDetailsService userDetailsService
+    ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.apiRequestLoggingFilter = apiRequestLoggingFilter;
         this.userDetailsService = userDetailsService;
     }
 
@@ -60,7 +67,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**", "/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(apiRequestLoggingFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 
