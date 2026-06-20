@@ -17,6 +17,34 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+  pageturn-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pageturn-api:prod
+    container_name: pageturn-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: pageturn-db
+      JAVA_TOOL_OPTIONS: --enable-native-access=ALL-UNNAMED
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      pageturn-db:
+        condition: service_healthy
+    volumes:
+      - pageturn_uploads:/opt/pageturn/uploads
+      - pageturn_public:/opt/pageturn/public
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
 volumes:
   postgres_data:
+  pageturn_uploads:
+  pageturn_public:

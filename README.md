@@ -229,6 +229,48 @@ export APP_STORAGE_PUBLIC_DIR=/opt/pageturn/public
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
+## Production Docker Deployment
+
+Files added for production deployment:
+
+- `Dockerfile`
+- `docker-compose.prod.yml`
+- `.env.prod.example`
+
+Prepare the environment:
+
+```bash
+cp .env.prod.example .env.prod
+```
+
+Then edit `.env.prod` and set at minimum:
+
+- `DB_NAME`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `JWT_SECRET`
+- `APP_CORS_ORIGIN_WEB`
+- `APP_CORS_ORIGIN_WEB_ALT`
+
+Build and start the production stack:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+```
+
+Stop it:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod down
+```
+
+The production stack provides:
+
+- `pageturn-app` on `${APP_PORT:-8080}`
+- `pageturn-db` on an internal Docker network only
+- persistent Docker volumes for PostgreSQL data, uploads, and public files
+- a container healthcheck against `/actuator/health`
+
 ## Build
 
 Compile:
